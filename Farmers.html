@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>பசுமை பூமி - Green Earth Farm</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(to bottom, #8B7355 0%, #6F5643 50%, #4A3728 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Soil texture background */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(139, 115, 85, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(111, 86, 67, 0.3) 0%, transparent 50%);
+            opacity: 0.5;
+        }
+
+        /* Emerging plants animation */
+        .plant {
+            position: absolute;
+            font-size: 40px;
+            animation: emerge 4s ease-out infinite;
+            opacity: 0;
+        }
+
+        @keyframes emerge {
+            0% {
+                transform: translateY(100px) scale(0);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-20px) scale(1);
+                opacity: 0.3;
+            }
+        }
+
+        .plant1 { bottom: -20px; left: 10%; animation-delay: 0s; }
+        .plant2 { bottom: -20px; left: 25%; animation-delay: 1s; font-size: 35px; }
+        .plant3 { bottom: -20px; right: 30%; animation-delay: 2s; }
+        .plant4 { bottom: -20px; right: 15%; animation-delay: 1.5s; font-size: 45px; }
+        .plant5 { bottom: -20px; left: 50%; animation-delay: 0.5s; }
+        .plant6 { bottom: -20px; left: 70%; animation-delay: 2.5s; font-size: 38px; }
+
+        /* Floating seeds */
+        .seed {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #8B7355;
+            border-radius: 50%;
+            animation: fallingSeed 6s infinite ease-in;
+            opacity: 0;
+        }
+
+        @keyframes fallingSeed {
+            0% {
+                transform: translateY(-50px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(calc(100vh + 50px)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .seed1 { top: -50px; left: 15%; animation-delay: 0s; }
+        .seed2 { top: -50px; left: 35%; animation-delay: 2s; }
+        .seed3 { top: -50px; left: 55%; animation-delay: 4s; }
+        .seed4 { top: -50px; left: 75%; animation-delay: 1s; }
+        .seed5 { top: -50px; left: 85%; animation-delay: 3s; }
+
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: #F5F3F0;
+            border-radius: 40px;
+            box-shadow: 0 30px 80px rgba(74, 55, 40, 0.6);
+            overflow: hidden;
+            position: relative;
+            border: 8px solid #4A3728;
+        }
+
+        /* Status Bar - Earthy */
+        .status-bar {
+            height: 44px;
+            background: linear-gradient(135deg, #6F5643 0%, #5D4A38 100%);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            color: #E8DCC8;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Header with soil and sprout theme */
+        .header {
+            background: linear-gradient(180deg, #6F5643 0%, #8B7355 50%, #A8956B 100%);
+            padding: 25px 20px;
+            color: #F5F3F0;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid #4A3728;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: repeating-linear-gradient(
+                90deg,
+                #4A3728 0px,
+                #4A3728 10px,
+                #6F5643 10px,
+                #6F5643 20px
+            );
+        }
+
+        .header::after {
+            content: '🌱';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 60px;
+            opacity: 0.2;
+            animation: sproutGrow 3s ease-in-out infinite;
+        }
+
+        @keyframes sproutGrow {
+            0%, 100% { transform: translateY(-50%) scale(1); }
+            50% { transform: translateY(-60%) scale(1.1); }
+        }
+
+        .header h1 {
+            font-size: 26px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(74, 55, 40, 0.5);
+        }
+
+        .header h1 .leaf-icon {
+            animation: leafSway 3s infinite ease-in-out;
+            filter: drop-shadow(0 0 8px rgba(167, 199, 133, 0.6));
+        }
+
+        @keyframes leafSway {
+            0%, 100% { transform: rotate(-8deg); }
+            50% { transform: rotate(8deg); }
+        }
+
+        .header p {
+            font-size: 13px;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
+            color: #E8DCC8;
+        }
+
+        /* Search Bar - Pastel Green */
+        .search-bar {
+            padding: 15px 20px;
+            background: linear-gradient(to bottom, #C8D5B9 0%, #B8C9A8 100%);
+            border-bottom: 3px solid #8B9D7C;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px 14px 45px;
+            border: 3px solid #7A9063;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            background: #F5F8F2 url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%237A9063" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>') no-repeat 15px center;
+            box-shadow: 0 4px 12px rgba(122, 144, 99, 0.2);
+            color: #4A3728;
+        }
+
+        .search-input::placeholder {
+            color: #8B9D7C;
+        }
+
+        .search-input:focus {
+            border-color: #5D7348;
+            box-shadow: 0 6px 16px rgba(93, 115, 72, 0.3);
+            transform: translateY(-2px);
+            background-color: white;
+        }
+
+        /* Quick Actions - Earthy Pastel */
+        .quick-actions {
+            padding: 25px 20px;
+            background: linear-gradient(to bottom, #E8DCC8 0%, #D4C4A8 100%);
+            position: relative;
+        }
+
+        .quick-actions::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(to bottom, transparent, rgba(139, 115, 85, 0.1));
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: #4A3728;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-title::before {
+            content: '🌾';
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .action-card {
+            background: linear-gradient(135deg, #F5F8F2 0%, #E8F0DD 100%);
+            border-radius: 20px;
+            padding: 18px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 3px solid #C8D5B9;
+            box-shadow: 0 4px 12px rgba(122, 144, 99, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #7A9063, #A8956B, #8B7355);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .action-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .action-card:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 8px 20px rgba(122, 144, 99, 0.35);
+            border-color: #7A9063;
+            background: linear-gradient(135deg, #FFFFFF 0%, #F5F8F2 100%);
+        }
+
+        .action-card:active {
+            transform: translateY(-4px) scale(0.98);
+        }
+
+        .action-icon {
+            font-size: 40px;
+            margin-bottom: 8px;
+            display: inline-block;
+            animation: iconFloat 3s infinite ease-in-out;
+            filter: drop-shadow(0 2px 4px rgba(74, 55, 40, 0.2));
+        }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .action-card:nth-child(1) .action-icon { animation-delay: 0s; }
+        .action-card:nth-child(2) .action-icon { animation-delay: 0.3s; }
+        .action-card:nth-child(3) .action-icon { animation-delay: 0.6s; }
+        .action-card:nth-child(4) .action-icon { animation-delay: 0.9s; }
+        .action-card:nth-child(5) .action-icon { animation-delay: 1.2s; }
+        .action-card:nth-child(6) .action-icon { animation-delay: 1.5s; }
+
+        .action-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: #4A3728;
+        }
+
+        .action-label-tamil {
+            font-size: 11px;
+            color: #6F5643;
+            margin-top: 3px;
+            font-weight: 600;
+        }
+
+        /* Community Feed - Light Earthy */
+        .community-feed {
+            padding: 20px;
+            background: linear-gradient(to bottom, #F5F3F0 0%, #E8E4DD 100%);
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .post-card {
+            background: linear-gradient(135deg, #FFFFFF 0%, #F5F8F2 100%);
+            border-radius: 20px;
+            padding: 18px;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 15px rgba(122, 144, 99, 0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid #C8D5B9;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-card::before {
+            content: '🌱';
+            position: absolute;
+            right: -10px;
+            bottom: -10px;
+            font-size: 100px;
+            opacity: 0.05;
+            transform: rotate(-15deg);
+        }
+
+        .post-card:hover {
+            box-shadow: 0 8px 25px rgba(122, 144, 99, 0.3);
+            transform: translateY(-4px);
+            border-color: #7A9063;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #7A9063 0%, #A8956B 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 18px;
+            border: 3px solid #C8D5B9;
+            box-shadow: 0 4px 10px rgba(122, 144, 99, 0.3);
+        }
+
+        .post-card:nth-child(3) .avatar {
+            background: linear-gradient(135deg, #8B7355 0%, #A8956B 100%);
+        }
+
+        .post-card:nth-child(4) .avatar {
+            background: linear-gradient(135deg, #6F5643 0%, #8B7355 100%);
+        }
+
+        .post-card:nth-child(5) .avatar {
+            background: linear-gradient(135deg, #A7C787 0%, #7A9063 100%);
+        }
+
+        .post-info {
+            flex: 1;
+        }
+
+        .post-author {
+            font-weight: 700;
+            font-size: 15px;
+            color: #4A3728;
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: #8B7355;
+            font-weight: 500;
+        }
+
+        .post-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #5D4A38;
+            margin-bottom: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .post-tags {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .tag {
+            background: linear-gradient(135deg, #C8D5B9 0%, #B8C9A8 100%);
+            color: #4A3728;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 700;
+            border: 2px solid #A7C787;
+            transition: all 0.3s;
+            box-shadow: 0 2px 6px rgba(122, 144, 99, 0.2);
+        }
+
+        .tag:hover {
+            background: linear-gradient(135deg, #A7C787 0%, #8FA974 100%);
+            color: white;
+            transform: scale(1.05);
+            box-shadow: 0 4px 10px rgba(122, 144, 99, 0.3);
+        }
+
+        .post-actions {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px solid #C8D5B9;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #7A9063;
+            cursor: pointer;
+            transition: all 0.3s;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+        }
+
+        .post-action:hover {
+            background: linear-gradient(135deg, #C8D5B9 0%, #B8C9A8 100%);
+            color: #4A3728;
+            transform: scale(1.1);
+        }
+
+        /* Bottom Navigation - Earthy Tones */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background: linear-gradient(to top, #6F5643 0%, #8B7355 100%);
+            border-top: 3px solid #4A3728;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            box-shadow: 0 -4px 15px rgba(74, 55, 40, 0.3);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: #C8D5B9;
+            transition: all 0.3s;
+            padding: 8px 12px;
+            border-radius: 15px;
+        }
+
+        .nav-item.active {
+            color: #F5F8F2;
+            background: rgba(167, 199, 135, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .nav-item:hover {
+            transform: translateY(-3px);
+            color: #F5F8F2;
+        }
+
+        .nav-icon {
+            font-size: 28px;
+            transition: transform 0.3s;
+            filter: drop-shadow(0 2px 4px rgba(74, 55, 40, 0.3));
+        }
+
+        .nav-item:hover .nav-icon {
+            transform: scale(1.2);
+        }
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* Floating Action Button - Seed/Sprout */
+        .fab {
+            position: absolute;
+            bottom: 90px;
+            right: 25px;
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #7A9063 0%, #A7C787 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 32px;
+            box-shadow: 0 8px 25px rgba(122, 144, 99, 0.5);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 4px solid #E8F0DD;
+            animation: fabGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes fabGlow {
+            0%, 100% { 
+                box-shadow: 0 8px 25px rgba(122, 144, 99, 0.5);
+            }
+            50% { 
+                box-shadow: 0 8px 35px rgba(167, 199, 135, 0.7);
+            }
+        }
+
+        .fab:hover {
+            transform: scale(1.15) rotate(90deg);
+            box-shadow: 0 12px 35px rgba(122, 144, 99, 0.6);
+            background: linear-gradient(135deg, #A7C787 0%, #7A9063 100%);
+        }
+
+        .fab:active {
+            transform: scale(1.05) rotate(90deg);
+        }
+
+        /* Modal - Earthy Theme */
+        .modal {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(111, 86, 67, 0.9) 0%, rgba(74, 55, 40, 0.9) 100%);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #F5F8F2 0%, #E8F0DD 100%);
+            border-radius: 30px;
+            padding: 30px;
+            width: 90%;
+            max-width: 320px;
+            max-height: 80%;
+            overflow-y: auto;
+            box-shadow: 0 15px 50px rgba(74, 55, 40, 0.5);
+            border: 5px solid #8B7355;
+            animation: slideUp 0.3s;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translateY(50px) scale(0.9);
+                opacity: 0;
+            }
+            to { 
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-content::before {
+            content: '🌱';
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            font-size: 50px;
+            opacity: 0.1;
+        }
+
+        .modal-header {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #4A3728;
+            text-align: center;
+            border-bottom: 3px solid #C8D5B9;
+            padding-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #5D4A38;
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 3px solid #C8D5B9;
+            border-radius: 15px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+            background: white;
+            color: #4A3728;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: #7A9063;
+            background: #F5F8F2;
+            box-shadow: 0 6px 16px rgba(122, 144, 99, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #7A9063 0%, #A7C787 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(122, 144, 99, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(122, 144, 99, 0.4);
+            background: linear-gradient(135deg, #A7C787 0%, #7A9063 100%);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #D4C4A8 0%, #C8B898 100%);
+            color: #4A3728;
+            border: none;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #8B7355 0%, #6F5643 100%);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .scrollable-content {
+            height: calc(812px - 44px - 113px - 60px);
+            overflow-y: auto;
+        }
+
+        /* Custom earthy scrollbar */
+        .scrollable-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-track {
+            background: linear-gradient(to bottom, #E8DCC8 0%, #D4C4A8 100%);
+        }
+
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #8B7355, #6F5643);
+            border-radius: 10px;
+        }
+
+        .community-feed::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .community-feed::-webkit-scrollbar-track {
+            background: linear-gradient(to bottom, #F5F3F0 0%, #E8E4DD 100%);
+        }
+
+        .community-feed::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, #7A9063, #A7C787);
+            border-radius: 10px;
+        }
+
+        /* Success message - Nature themed */
+        @keyframes successPop {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #A7C787 0%, #7A9063 100%);
+            color: white;
+            padding: 25px 45px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 15px 50px rgba(122, 144, 99, 0.5);
+            z-index: 2000;
+            animation: successPop 0.6s;
+            border: 4px solid #E8F0DD;
+        }
+    </style>
+</head>
+<body>
+    <!-- Emerging plants -->
+    <div class="plant plant1">🌱</div>
+    <div class="plant plant2">🌿</div>
+    <div class="plant plant3">🌾</div>
+    <div class="plant plant4">🌱</div>
+    <div class="plant plant5">🌿</div>
+    <div class="plant plant6">🌾</div>
+
+    <!-- Falling seeds -->
+    <div class="seed seed1"></div>
+    <div class="seed seed2"></div>
+    <div class="seed seed3"></div>
+    <div class="seed seed4"></div>
+    <div class="seed seed5"></div>
+
+    <div class="phone-frame">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="time">9:41</div>
+            <div class="indicators">
+                <span>📶</span>
+                <span>📡</span>
+                <span>🔋</span>
+            </div>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <span class="leaf-icon">🌱</span>
+                பசுமை பூமி
+            </h1>
+            <p>Green Earth - விவசாயிகளின் அறிவு பகிர்வு</p>
+        </div>
+
+        <!-- Scrollable Content Area -->
+        <div class="scrollable-content">
+            <!-- Search Bar -->
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="தேடு / Search farming tips & knowledge...">
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <div class="section-title">விரைவு செயல்கள் / Quick Actions</div>
+                <div class="action-grid">
+                    <div class="action-card" onclick="showModal('askQuestion')">
+                        <div class="action-icon">❓</div>
+                        <div class="action-label">Ask</div>
+                        <div class="action-label-tamil">கேள்வி</div>
+                    </div>
+                    <div class="action-card" onclick="showModal('shareKnowledge')">
+                        <div class="action-icon">💡</div>
+                        <div class="action-label">Share</div>
+                        <div class="action-label-tamil">பகிர்</div>
+                    </div>
+                    <div class="action-card" onclick="showFeature('Weather')">
+                        <div class="action-icon">🌤️</div>
+                        <div class="action-label">Weather</div>
+                        <div class="action-label-tamil">வானிலை</div>
+                    </div>
+                    <div class="action-card" onclick="showFeature('Market Prices')">
+                        <div class="action-icon">💰</div>
+                        <div class="action-label">Prices</div>
+                        <div class="action-label-tamil">விலை</div>
+                    </div>
+                    <div class="action-card" onclick="showFeature('Crop Calendar')">
+                        <div class="action-icon">📅</div>
+                        <div class="action-label">Calendar</div>
+                        <div class="action-label-tamil">நாட்காட்டி</div>
+                    </div>
+                    <div class="action-card" onclick="showFeature('Connect with Experts')">
+                        <div class="action-icon">👨‍🌾</div>
+                        <div class="action-label">Experts</div>
+                        <div class="action-label-tamil">நிபுணர்</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Community Feed -->
+            <div class="community-feed">
+                <div class="section-title">சமூக பதிவுகள் / Community Knowledge</div>
+                
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="avatar">RM</div>
+                        <div class="post-info">
+                            <div class="post-author">Raman - Melur 🌱</div>
+                            <div class="post-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        என் தக்காளி பயிரில் பூச்சி தாக்குதல். நீம் எண்ணெய் தெளித்த பிறகு நல்ல முன்னேற்றம் தெரிகிறது! 
+                        <br><br>
+                        My tomato crop had pest attack. After spraying neem oil, seeing good improvement! 🍅✨
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">#Tomato</span>
+                        <span class="tag">#PestControl</span>
+                        <span class="tag">#NeemOil</span>
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action">👍 24</div>
+                        <div class="post-action">💬 8</div>
+                        <div class="post-action">🔄 Share</div>
+                    </div>
+                </div>
+
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="avatar">SK</div>
+                        <div class="post-info">
+                            <div class="post-author">Selvi - Usilampatti 🌾</div>
+                            <div class="post-time">5 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        வெங்காயம் சேமிப்பு முறை: நிழலில் உலர்த்தி, கூடை பையில் வைக்கவும். 3 மாதம் வரை கெடாமல் இருக்கும்.
+                        <br><br>
+                        Onion storage tip: Dry in shade, store in mesh bags. Will last up to 3 months without spoiling. 🧅💚
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">#Onion</span>
+                        <span class="tag">#Storage</span>
+                        <span class="tag">#Tips</span>
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action">👍 42</div>
+                        <div class="post-action">💬 12</div>
+                        <div class="post-action">🔄 Share</div>
+                    </div>
+                </div>
+
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="avatar">MK</div>
+                        <div class="post-info">
+                            <div class="post-author">Murugan - Madurai 🌿</div>
+                            <div class="post-time">1 day ago</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        கரிம உரம் தயாரிப்பு: மாட்டு சாணம், சாம்பல், மண் கலந்து 45 நாட்கள் காற்றோட்டத்துடன் புரட்டவும்.
+                        <br><br>
+                        Organic compost making: Mix cow dung, ash, soil and turn with aeration for 45 days. 🌱♻️
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">#Compost</span>
+                        <span class="tag">#Organic</span>
+                        <span class="tag">#Tutorial</span>
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action">👍 67</div>
+                        <div class="post-action">💬 23</div>
+                        <div class="post-action">🔄 Share</div>
+                    </div>
+                </div>
+
+                <div class="post-card">
+                    <div class="post-header">
+                        <div class="avatar">PA</div>
+                        <div class="post-info">
+                            <div class="post-author">Palani - Theni 🌻</div>
+                            <div class="post-time">2 days ago</div>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        மழை நீர் சேமிப்பு குளம் வெட்டினேன். இப்போது வறண்ட காலத்தில் பயிர்களுக்கு போதுமான நீர் கிடைக்கிறது!
+                        <br><br>
+                        Built rainwater harvesting pond. Now my crops have enough water during dry season! 💧🌾
+                    </div>
+                    <div class="post-tags">
+                        <span class="tag">#WaterHarvesting</span>
+                        <span class="tag">#Irrigation</span>
+                        <span class="tag">#Sustainable</span>
+                    </div>
+                    <div class="post-actions">
+                        <div class="post-action">👍 89</div>
+                        <div class="post-action">💬 34</div>
+                        <div class="post-action">🔄 Share</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Action Button -->
+        <div class="fab" onclick="showModal('newPost')" title="Plant your knowledge">
+            🌱
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item active">
+                <div class="nav-icon">🏠</div>
+                <div class="nav-label">Home</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">🔍</div>
+                <div class="nav-label">Explore</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">📚</div>
+                <div class="nav-label">Library</div>
+            </div>
+            <div class="nav-item">
+                <div class="nav-icon">👤</div>
+                <div class="nav-label">Profile</div>
+            </div>
+        </div>
+
+        <!-- New Post Modal -->
+        <div id="newPostModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">🌱 Plant Your Knowledge<br>உங்கள் அறிவை பகிரவும்</div>
+                <form onsubmit="submitPost(event)">
+                    <div class="form-group">
+                        <label class="form-label">📝 Title / தலைப்பு</label>
+                        <input type="text" class="form-input" placeholder="Enter title..." required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">📋 Description / விளக்கம்</label>
+                        <textarea class="form-textarea" placeholder="Share your farming wisdom..." required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">🏷️ Category / வகை</label>
+                        <input type="text" class="form-input" placeholder="e.g., Pest Control, Seeds, Irrigation">
+                    </div>
+                    <button type="submit" class="btn-primary">Plant / பதிவிடு 🌱</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('newPost')">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Ask Question Modal -->
+        <div id="askQuestionModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">❓ Seek Knowledge<br>கேள்வி கேளுங்கள்</div>
+                <form onsubmit="submitQuestion(event)">
+                    <div class="form-group">
+                        <label class="form-label">🤔 Your Question / உங்கள் கேள்வி</label>
+                        <textarea class="form-textarea" placeholder="What would you like to know?" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">🏷️ Topic / தலைப்பு</label>
+                        <input type="text" class="form-input" placeholder="e.g., Rice farming, Pest control">
+                    </div>
+                    <button type="submit" class="btn-primary">Ask / கேளுங்கள் 🌾</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('askQuestion')">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Share Knowledge Modal -->
+        <div id="shareKnowledgeModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">💡 Share Your Wisdom<br>உங்கள் குறிப்பு பகிரவும்</div>
+                <form onsubmit="submitTip(event)">
+                    <div class="form-group">
+                        <label class="form-label">🌟 Tip Title / குறிப்பு தலைப்பு</label>
+                        <input type="text" class="form-input" placeholder="Enter tip title..." required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">📖 Details / விவரம்</label>
+                        <textarea class="form-textarea" placeholder="Share your farming technique..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary">Share / பகிர் 🌿</button>
+                    <button type="button" class="btn-secondary" onclick="closeModal('shareKnowledge')">Cancel</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div id="successMessage" class="success-message">
+            ✅ Knowledge Planted Successfully!
+        </div>
+    </div>
+
+    <script>
+        function showModal(modalType) {
+            const modalMap = {
+                'newPost': 'newPostModal',
+                'askQuestion': 'askQuestionModal',
+                'shareKnowledge': 'shareKnowledgeModal'
+            };
+            
+            const modalId = modalMap[modalType];
+            if (modalId) {
+                document.getElementById(modalId).classList.add('active');
+            }
+        }
+
+        function closeModal(modalType) {
+            const modalMap = {
+                'newPost': 'newPostModal',
+                'askQuestion': 'askQuestionModal',
+                'shareKnowledge': 'shareKnowledgeModal'
+            };
+            
+            const modalId = modalMap[modalType];
+            if (modalId) {
+                document.getElementById(modalId).classList.remove('active');
+            }
+        }
+
+        function showSuccess(message) {
+            const successMsg = document.getElementById('successMessage');
+            successMsg.textContent = message;
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 2500);
+        }
+
+        function submitPost(event) {
+            event.preventDefault();
+            showSuccess('🌱 Knowledge planted successfully!\nஅறிவு வெற்றிகரமாக பகிரப்பட்டது!');
+            closeModal('newPost');
+            event.target.reset();
+        }
+
+        function submitQuestion(event) {
+            event.preventDefault();
+            showSuccess('❓ Question posted! Farmers will help soon.\nகேள்வி பதிவிடப்பட்டது!');
+            closeModal('askQuestion');
+            event.target.reset();
+        }
+
+        function submitTip(event) {
+            event.preventDefault();
+            showSuccess('💡 Thank you for growing our knowledge!\nஉங்கள் அறிவைப் பகிர்ந்ததற்கு நன்றி!');
+            closeModal('shareKnowledge');
+            event.target.reset();
+        }
+
+        function showFeature(featureName) {
+            showSuccess(`🌱 ${featureName} feature germinating soon!`);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        }
+
+        // Add interactivity to nav items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

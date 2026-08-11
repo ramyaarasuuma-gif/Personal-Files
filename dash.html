@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>RockShield Lite — Interactive SIH Demo</title>
+
+<!-- External libs -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+  :root{
+    --white:#ffffff; --muted:#6b7280; --accent:#0ea5a3; --danger:#ef4444; --warn:#f59e0b; --safe:#16a34a;
+    --glass: rgba(2,6,23,0.03);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,"Helvetica Neue",Arial;background:var(--white);color:#0b1220}
+  header{height:64px;display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-bottom:1px solid #eef2f7;transition:0.3s}
+  .brand{display:flex;gap:12px;align-items:center}
+  .logo{width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#7c3aed);display:flex;align-items:center;justify-content:center;color:white;font-weight:800}
+  header h1{margin:0;font-size:18px}
+  header p{margin:0;color:var(--muted);font-size:13px}
+  .app{display:grid;grid-template-columns:1fr 400px;gap:14px;padding:14px;height:calc(100vh - 64px)}
+  .panel{background:var(--white);border-radius:12px;padding:12px;border:1px solid #eef2f7;box-shadow:0 6px 20px rgba(10,20,30,0.03)}
+  .map-wrap{display:flex;flex-direction:column;gap:12px}
+  #map{height:60vh;border-radius:10px;border:1px solid #e6eef8}
+  #twin{height:35vh;border-radius:8px;border:1px solid #e6eef8}
+  .sidebar{display:flex;flex-direction:column;gap:12px;height:100%}
+  .controls .row{display:flex;gap:8px;align-items:center}
+  label{display:block;font-size:13px;color:var(--muted);margin:6px 0}
+  input,select,button{width:100%;padding:8px;border-radius:8px;border:1px solid #eef2f7;background:transparent;color:inherit}
+  button.btn{background:linear-gradient(90deg,var(--accent),#7c3aed);color:white;border:none;padding:9px 12px;font-weight:700;cursor:pointer;transition:0.2s}
+  button.btn:hover{opacity:0.9}
+  .btn.alt{background:linear-gradient(90deg,#ffd166,#ff7b00);color:#021024}
+  .btn.ghost{background:transparent;border:1px solid #eef2f7;color:var(--muted)}
+  .small{font-size:13px;color:var(--muted)}
+  .stats{display:flex;gap:8px}
+  .stat{flex:1;padding:10px;border-radius:8px;background:linear-gradient(180deg, #fbfdff, #f6fbfb);text-align:center;border:1px solid #eef2f7}
+  .stat h3{margin:0;font-size:20px}
+  .legend{display:flex;gap:8px;align-items:center}
+  .legend .item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted)}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .dot.safe{background:var(--safe)}
+  .dot.warn{background:var(--warn)}
+  .dot.danger{background:var(--danger)}
+  .feed{max-height:28vh;overflow:auto;padding:8px;border-radius:8px;border:1px solid #eef2f7;background:#fcfcfd}
+  .feed-item{padding:8px;border-radius:6px;margin-bottom:8px;background:linear-gradient(90deg,#fff, #fcfcff);border-left:4px solid #e6eef8}
+  .feed-item.high{border-left-color:var(--danger);background:linear-gradient(90deg,#fff7f7,#fff)}
+  .feed-item.medium{border-left-color:var(--warn)}
+  .feed-item.safe{border-left-color:var(--safe)}
+  .wearable{display:flex;gap:12px;align-items:center}
+  .helmet{width:56px;height:56px;border-radius:8px;background:linear-gradient(180deg,#ffd86b,#ffb703);display:flex;align-items:center;justify-content:center;position:relative;box-shadow:0 8px 18px rgba(0,0,0,0.08)}
+  .led{width:12px;height:12px;border-radius:50%;position:absolute;top:8px;right:8px;background:#444}
+  .vibrate{animation:vib 0.12s linear infinite}
+  @keyframes vib{0%{transform:translateX(-1px)}50%{transform:translateX(1px)}100%{transform:translateX(-1px)}}
+  .deafOverlay{position:fixed;inset:0;background:rgba(255,0,0,0.1);display:none;align-items:center;justify-content:center;z-index:9999}
+  .deafOverlay .card{background:white;padding:20px;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,0.15);text-align:center;border:2px solid #ffefef}
+  @media (max-width:1000px){ .app{grid-template-columns:1fr;} #map{height:50vh} #twin{height:25vh} .sidebar{height:auto} }
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">
+    <div class="logo">RS</div>
+    <div>
+      <h1>RockShield Lite</h1>
+      <p class="small">AI + Physics Hybrid · Edge AI Ready · Digital Twin · Interactive</p>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;align-items:center">
+    <div class="small">Demo Prototype</div>
+    <div class="small" id="topRisk">Risk: <strong>Low</strong></div>
+  </div>
+</header>
+
+<div class="app">
+  <!-- LEFT: Map & Twin -->
+  <div class="panel map-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <strong>India Mines Map</strong>
+        <div class="small">Click a mine marker → focus → run prediction & show routes / hospitals</div>
+      </div>
+      <div class="legend">
+        <div class="item"><div class="dot safe"></div>Safe</div>
+        <div class="item"><div class="dot warn"></div>Medium</div>
+        <div class="item"><div class="dot danger"></div>High</div>
+      </div>
+    </div>
+
+    <div id="map"></div>
+    <div id="twin"></div>
+  </div>
+
+  <!-- RIGHT: Controls & Info -->
+  <aside class="sidebar panel">
+    <div class="controls card">
+      <label>Select Mine</label>
+      <select id="mineSelect"></select>
+
+      <label>Simulated Rainfall (mm, 24h)</label>
+      <input id="rainInput" type="number" value="30" min="0" max="200">
+
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn" id="runBtn">Run Prediction</button>
+        <button class="btn alt" id="evacBtn">Evacuate</button>
+      </div>
+
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="btn ghost" id="toggleEdge">Toggle Edge AI</button>
+        <button class="btn ghost" id="toggleTwin">Toggle Digital Twin</button>
+      </div>
+
+      <label style="margin-top:10px">Accessibility</label>
+      <div style="display:flex;gap:8px">
+        <button class="btn ghost" id="deafBtn">Deaf Mode</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="small">Live Status</div>
+        <div class="small">Edge AI</div>
+      </div>
+      <div class="stats" style="margin-top:8px">
+        <div class="stat"><div class="small">Predictions</div><h3 id="countPred">0</h3></div>
+        <div class="stat"><div class="small">Alerts</div><h3 id="countAlerts">0</h3></div>
+        <div class="stat"><div class="small">Saved</div><h3 id="countSaved">0</h3></div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="small">Edge Node:</div>
+        <div id="edgeStatus" class="small">Idle — Local inference ready</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="small">Risk Forecast</div>
+      <canvas id="riskChart"></canvas>
+    </div>
+
+    <div class="card">
+      <div class="small">Alerts Feed</div>
+      <div class="feed" id="feed"></div>
+    </div>
+
+    <div class="card">
+      <div class="small">Wearable Demo</div>
+      <div style="display:flex;gap:10px;align-items:center;margin-top:8px">
+        <div class="helmet" id="helmet"><div class="led" id="led"></div>⛑</div>
+        <div>
+          <div class="small">Helmet status</div>
+          <div id="helmetStatus" style="font-weight:700">Idle</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div id="deafOverlay" class="deafOverlay">
+  <div class="card">
+    <h2 style="margin:0;color:#b91c1c">ALERT — EVACUATE NOW</h2>
+    <p style="font-size:18px;margin:10px 0">🔴 Zone C — High Risk</p>
+    <p style="margin:0">Route: Gate 2 → Emergency Road → Hospital</p>
+    <div style="margin-top:12px"><button class="btn" id="ackDeaf">Acknowledge</button></div>
+  </div>
+</div>
+
+<script>
+/* ------------------------- Data & App State ------------------------- */
+const MINES = [
+  { id:'gevra', name:'Gevra Open Cast (Chhattisgarh)', center:[22.345,82.610], zoom:14 },
+  { id:'kusmunda', name:'Kusmunda (Chhattisgarh)', center:[22.19,82.52], zoom:14 },
+  { id:'neyveli', name:'Neyveli Lignite (TN)', center:[11.566,79.511], zoom:14 }
+];
+
+const HEAT = {
+  gevra:[[22.347,82.608,0.98],[22.346,82.609,0.9],[22.344,82.613,0.7]],
+  kusmunda:[[22.201,82.505,0.45],[22.203,82.501,0.35]],
+  neyveli:[[11.566,79.511,0.7],[11.565,79.508,0.6]]
+};
+
+const HOSPITALS = [
+  {name:'Gevra District Hospital', lat:22.348, lon:82.615, phone:'+91-77000-00001'},
+  {name:'Kusmunda Health Center', lat:22.198, lon:82.503, phone:'+91-77000-00002'},
+  {name:'Neyveli General Hospital', lat:11.566, lon:79.513, phone:'+91-77000-00003'}
+];
+
+let map, heatLayer=null, routeLayer=null, hospitalMarkers=[];
+let selectedMine = MINES[0];
+let twinInitialized=false, twinRenderer, twinScene, twinCamera, twinMesh;
+let edgeMode=false, deafMode=false;
+const stats = {pred:0,alerts:0,saved:0};
+const feedEl = document.getElementById('feed');
+
+/* ------------------------- Map & Markers ------------------------- */
+function initMap(){
+  map = L.map('map', { zoomControl:true }).setView([22.0,80.0], 5.6);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{
+    attribution:'© OpenStreetMap contributors'
+  }).addTo(map);
+
+  MINES.forEach(m=>{
+    const marker = L.marker(m.center).addTo(map).bindPopup(m.name);
+    marker.on('click',()=>{ selectMine(m.id); });
+  });
+
+  updateMineSelect();
+  renderHeatmap();
+}
+
+function updateMineSelect(){
+  const sel = document.getElementById('mineSelect');
+  sel.innerHTML = '';
+  MINES.forEach(m=>{
+    const opt = document.createElement('option');
+    opt.value=m.id; opt.textContent=m.name;
+    if(m.id===selectedMine.id) opt.selected=true;
+    sel.appendChild(opt);
+  });
+  sel.onchange = ()=>{ selectMine(sel.value); }
+}
+
+function selectMine(id){
+  selectedMine = MINES.find(m=>m.id===id);
+  map.setView(selectedMine.center, selectedMine.zoom);
+  renderHeatmap();
+  showHospitals();
+  updateFeed(`Mine selected: ${selectedMine.name}`,'safe');
+}
+
+/* ------------------------- Heatmap ------------------------- */
+function renderHeatmap(){
+  if(heatLayer) map.removeLayer(heatLayer);
+  const points = HEAT[selectedMine.id].map(p=>[p[0],p[1],p[2]]);
+  heatLayer = L.heatLayer(points,{radius:25,blur:18,maxZoom:17}).addTo(map);
+}
+
+/* ------------------------- Hospitals & Routes ------------------------- */
+function showHospitals(){
+  hospitalMarkers.forEach(m=>map.removeLayer(m));
+  hospitalMarkers = [];
+  HOSPITALS.forEach(h=>{
+    const hm = L.marker([h.lat,h.lon],{icon:L.icon({iconUrl:'https://img.icons8.com/color/48/000000/hospital.png',iconSize:[28,28]})})
+      .addTo(map).bindPopup(`${h.name} <br> 📞 ${h.phone}`);
+    hospitalMarkers.push(hm);
+  });
+}
+
+function showRoute(){
+  if(routeLayer) map.removeLayer(routeLayer);
+  const points = [
+    selectedMine.center,
+    [selectedMine.center[0]+0.002, selectedMine.center[1]+0.003],
+    hospitalMarkers[0].getLatLng()
+  ];
+  routeLayer = L.polyline(points,{color:'blue',weight:3,dashArray:'6'}).addTo(map);
+}
+
+/* ------------------------- Edge AI & Prediction ------------------------- */
+document.getElementById('runBtn').onclick = ()=>{
+  stats.pred++; updateStats();
+  const riskLevels=['safe','medium','danger'];
+  const risk = riskLevels[Math.floor(Math.random()*3)];
+  const topRisk = document.getElementById('topRisk');
+  topRisk.innerHTML = `Risk: <strong>${risk.toUpperCase()}</strong>`;
+  updateFeed(`Prediction run for ${selectedMine.name}: ${risk.toUpperCase()}`,risk);
+  animateHelmet(risk);
+  if(risk==='danger'){ stats.alerts++; updateStats(); showRoute(); if(deafMode)showDeafOverlay(); }
+}
+
+document.getElementById('evacBtn').onclick = ()=>{
+  updateFeed(`Evacuation triggered at ${selectedMine.name}`,'medium');
+  animateHelmet('safe');
+  showRoute();
+  stats.saved++; updateStats();
+}
+
+/* ------------------------- Feed & Stats ------------------------- */
+function updateFeed(msg,level){
+  const div = document.createElement('div');
+  div.className = `feed-item ${level}`;
+  div.textContent = `${new Date().toLocaleTimeString()} — ${msg}`;
+  feedEl.prepend(div);
+  if(feedEl.children.length>20) feedEl.removeChild(feedEl.lastChild);
+}
+
+function updateStats(){
+  document.getElementById('countPred').textContent=stats.pred;
+  document.getElementById('countAlerts').textContent=stats.alerts;
+  document.getElementById('countSaved').textContent=stats.saved;
+}
+
+/* ------------------------- Helmet Animation ------------------------- */
+function animateHelmet(risk){
+  const helmet = document.getElementById('helmet');
+  const led = document.getElementById('led');
+  const status = document.getElementById('helmetStatus');
+  helmet.classList.remove('vibrate');
+  led.style.background='#444'; status.textContent='Idle';
+  if(risk==='medium'){ helmet.classList.add('vibrate'); led.style.background='#f59e0b'; status.textContent='Warning'; }
+  if(risk==='danger'){ helmet.classList.add('vibrate'); led.style.background='#ef4444'; status.textContent='Critical'; }
+}
+
+/* ------------------------- Chart ------------------------- */
+const ctx = document.getElementById('riskChart').getContext('2d');
+const riskChart = new Chart(ctx,{type:'bar',data:{labels:['Safe','Medium','Danger'],datasets:[{label:'Predictions',data:[0,0,0],backgroundColor:['#16a34a','#f59e0b','#ef4444']}]},options:{responsive:true,plugins:{legend:{display:false}}}});
+function updateRiskChart(){
+  const data = riskChart.data.datasets[0].data;
+  data[0]=Math.floor(Math.random()*10); data[1]=Math.floor(Math.random()*5); data[2]=Math.floor(Math.random()*3);
+  riskChart.update();
+}
+setInterval(updateRiskChart,8000);
+
+/* ------------------------- Deaf Mode Overlay ------------------------- */
+document.getElementById('deafBtn').onclick = ()=>{
+  deafMode=!deafMode;
+  alert(`Deaf Mode ${deafMode?'Activated':'Deactivated'}`);
+}
+function showDeafOverlay(){
+  document.getElementById('deafOverlay').style.display='flex';
+}
+document.getElementById('ackDeaf').onclick = ()=>{ document.getElementById('deafOverlay').style.display='none'; }
+
+/* ------------------------- Digital Twin ------------------------- */
+function initTwin(){
+  const container = document.getElementById('twin');
+  twinScene = new THREE.Scene();
+  twinCamera = new THREE.PerspectiveCamera(45,container.clientWidth/container.clientHeight,0.1,100);
+  twinRenderer = new THREE.WebGLRenderer({antialias:true,alpha:true});
+  twinRenderer.setSize(container.clientWidth,container.clientHeight);
+  container.appendChild(twinRenderer.domElement);
+
+  const light = new THREE.DirectionalLight(0xffffff,1); light.position.set(5,10,5); twinScene.add(light);
+  twinMesh = new THREE.Mesh(new THREE.BoxGeometry(5,2,3), new THREE.MeshStandardMaterial({color:0x0ea5a3}));
+  twinScene.add(twinMesh);
+  twinCamera.position.set(5,5,8);
+  twinCamera.lookAt(0,0,0);
+  twinInitialized=true;
+  animateTwin();
+}
+
+function animateTwin(){
+  requestAnimationFrame(animateTwin);
+  twinMesh.rotation.y+=0.004;
+  twinRenderer.render(twinScene,twinCamera);
+}
+document.getElementById('toggleTwin').onclick = ()=>{
+  if(!twinInitialized) initTwin();
+  else document.getElementById('twin').style.display = document.getElementById('twin').style.display==='none'?'block':'none';
+}
+
+/* ------------------------- Initialize ------------------------- */
+initMap();
+showHospitals();
+</script>
+</body>
+</html>
